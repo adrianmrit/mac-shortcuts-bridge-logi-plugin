@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/core/">
+    <Project Path="core/MacShortcutsBridge.Core.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/MacShortcutsBridgePlugin.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MacShortcutsBridge.Core.Tests/MacShortcutsBridge.Core.Tests.csproj" />
+    <Project Path="tests/MacShortcutsBridge.Sdk.Tests/MacShortcutsBridge.Sdk.Tests.csproj" />
+  </Folder>
+</Solution>

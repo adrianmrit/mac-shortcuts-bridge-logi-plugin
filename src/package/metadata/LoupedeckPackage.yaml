@@ -1,0 +1,16 @@
+type: plugin4
+name: MacShortcutsBridge
+displayName: Mac Shortcuts Bridge
+description: Run your macOS shortcuts from MX Creative Keypad and Actions Ring.
+pluginFileName: MacShortcutsBridgePlugin.dll
+pluginFolderMac: bin
+version: 1.0.0
+author: adrianmrit
+homePageUrl: https://github.com/adrianmrit/mac-shortcuts-bridge-logi-plugin
+copyright: Copyright 2026 adrianmrit. All rights reserved.
+supportedDevices:
+  - Loupedeck70
+  - Loupedeck72
+minimumLoupedeckVersion: 6.4.2
+backgroundColor: 4278190080
+license: Proprietary

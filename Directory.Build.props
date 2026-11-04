@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <PluginApiDir Condition="'$(PluginApiDir)' == '' and '$(MAC_SHORTCUTS_SDK_DIR)' != ''">$([System.IO.Path]::GetFullPath('$(MAC_SHORTCUTS_SDK_DIR)'))</PluginApiDir>
+    <PluginApiDir Condition="'$(PluginApiDir)' == ''">/Applications/Utilities/LogiPluginService.app/Contents/MonoBundle</PluginApiDir>
+    <TargetFramework>net10.0</TargetFramework>
+    <Version>1.0.0</Version>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>

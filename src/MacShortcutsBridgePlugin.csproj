@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Loupedeck.MacShortcutsBridgePlugin</RootNamespace>
+    <OutputPath>../bin/$(Configuration)/bin/</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PluginApi">
+      <HintPath>$(PluginApiDir)/PluginApi.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="LoupedeckShared">
+      <HintPath>$(PluginApiDir)/LoupedeckShared.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <ProjectReference Include="../core/MacShortcutsBridge.Core.csproj" />
+    <EmbeddedResource Include="Assets/*.svg" />
+    <EmbeddedResource Include="package/metadata/DefaultIconTemplate.ict" LogicalName="Loupedeck.MacShortcutsBridgePlugin.Assets.DefaultIconTemplate.ict" />
+    <EmbeddedResource Include="package/metadata/Icon256x256.png" LogicalName="Loupedeck.MacShortcutsBridgePlugin.Assets.Icon256x256.png" />
+    <InternalsVisibleTo Include="MacShortcutsBridge.Sdk.Tests" />
+  </ItemGroup>
+  <Target Name="CopyPackage" AfterTargets="Build" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+    <ItemGroup>
+      <PackageFiles Include="package/**/*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(PackageFiles)" DestinationFiles="@(PackageFiles->'$(OutputPath)../%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="Assets/ShortcutsBridge.svg" DestinationFiles="$(OutputPath)../actionsymbols/RunShortcut.svg" />
+    <Delete Files="$(OutputPath)../actionicons/RunShortcut.svg" />
+    <Exec Command="base64 -i &quot;$(MSBuildProjectDirectory)/package/metadata/Icon256x256.png&quot;" ConsoleToMSBuild="true" StandardOutputImportance="Low">
+      <Output TaskParameter="ConsoleOutput" PropertyName="DefaultIconImage" />
+    </Exec>
+    <PropertyGroup>
+      <DefaultIconTemplate>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)/package/metadata/DefaultIconTemplate.ict').Replace('__DEFAULT_ICON_IMAGE__', '$(DefaultIconImage)'))</DefaultIconTemplate>
+    </PropertyGroup>
+    <MakeDir Directories="$(OutputPath)../metadata;$(OutputPath)../icontemplates" />
+    <WriteLinesToFile File="$(OutputPath)../metadata/DefaultIconTemplate.ict" Lines="$(DefaultIconTemplate)" Overwrite="true" />
+    <WriteLinesToFile File="$(OutputPath)../icontemplates/RunShortcut.ict" Lines="$(DefaultIconTemplate)" Overwrite="true" />
+  </Target>
+  <Target Name="InstallDevelopmentLink" AfterTargets="Build" Condition="'$(InstallDevelopmentLink)' == 'true'">
+    <PropertyGroup>
+      <DevelopmentPluginDir>$(HOME)/Library/Application Support/Logi/LogiPluginService/Plugins</DevelopmentPluginDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(DevelopmentPluginDir)" />
+    <WriteLinesToFile File="$(DevelopmentPluginDir)/MacShortcutsBridgePlugin.link" Lines="$([System.IO.Path]::GetFullPath('$(OutputPath)..'))" Overwrite="true" />
+  </Target>
+  <Target Name="ReloadDevelopmentPlugin" AfterTargets="InstallDevelopmentLink"
+          Condition="'$(InstallDevelopmentLink)' == 'true' and '$(ReloadPlugin)' == 'true'">
+    <Exec Command="open -g 'loupedeck:plugin/MacShortcutsBridge/reload'" />
+  </Target>
+</Project>
